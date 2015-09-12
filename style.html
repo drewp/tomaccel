@@ -1,0 +1,73 @@
+<link rel="import" href="bower_components/paper-styles/typography.html">
+<link rel="import" href="bower_components/paper-styles/shadow.html">
+<link rel="import" href="bower_components/paper-styles/color.html">    
+<style is="custom-style">
+
+ body {
+   font-family: 'Roboto', 'Noto', sans-serif;
+   font-size: 14px;
+   margin: 0;
+   padding: 24px;
+   background-color: var(--paper-grey-50);
+ }
+
+ .horizontal-section-container {
+   @apply(--layout-horizontal);
+   @apply(--layout-center-justified);
+   @apply(--layout-wrap);
+ }
+
+ .vertical-section-container {
+   @apply(--layout-vertical);
+   @apply(--center-justified);
+ }
+
+ .horizontal-section {
+   background-color: white;
+   padding: 24px;
+   margin-right: 24px;
+   min-width: 200px;
+
+   @apply(--shadow-elevation-2dp);
+ }
+
+ .vertical-section {
+   background-color: white;
+   padding: 24px;
+   margin: 0 24px 24px 24px;
+
+   @apply(--shadow-elevation-2dp);
+ }
+
+ .centered {
+   max-width: 400px;
+   margin-left: auto;
+   margin-right: auto;
+ }
+
+ code {
+   color: var(--google-grey-700);
+ }
+
+
+
+ #paperDrawerPanel [main] {
+   background-color: var(--google-grey-100);
+ }
+
+ #paperDrawerPanel [drawer] {
+   border-right: 1px solid var(--google-grey-300);
+ }
+
+ #paperDrawerPanel[right-drawer] [drawer] {
+   border-left: 1px solid var(--google-grey-300);
+ }
+
+ paper-button {
+   color: white;
+   margin: 10px;
+   background-color: var(--google-blue-700);
+   white-space: nowrap;
+ }
+
+</style>
