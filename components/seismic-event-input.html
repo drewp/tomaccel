@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="seismic-event-input">
+  <template>
+    <style>
+     div {
+       display: inline-block;
+       padding: 5px;
+       border: 1px solid black;
+     }
+    </style>
+    <div>
+      New event:
+      <paper-dropdown-menu label="Type">
+        <paper-menu class="dropdown-content">
+          <paper-item>Croissant</paper-item>
+          <paper-item>Donut</paper-item>
+          <paper-item>Financier</paper-item>
+          <paper-item>Madeleine</paper-item>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <paper-button>Add</paper-button>
+
+    </div>
+  </template>
+  <script>
+
+     Polymer({
+       is: "seismic-event-input",
+     properties: {
+       fresh: String
+     },
+     ready: function() {
+       this.t = 20;
+       var loop = function() {
+         this.t = (this.t + 1) % 30;
+         this.fresh = this.t + ' sec';
+         setTimeout(loop, 1000);
+       }.bind(this);
+       loop();
+       }
+     });
+
+  </script>
+</dom-module>
