@@ -10,19 +10,33 @@
 
 <dom-module id="seismic-app">
   <template>
+    <style>
+     div[main] {
+       display: flex;
+       flex-direction: column;
+       align-items: stretch;
+       justify-content: space-between;
+     }
+     seismic-time-plot {
+       flex: 3 0;
+     }
+     seismic-frequency-plot {
+       flex: 1 0;
+     }
+    </style>
     <paper-drawer-panel id="paperDrawerPanel" force-narrow>
       <div drawer>some drawer things. settings, about</div>
       <div main>
-        <div>
-          <paper-button paper-drawer-toggle raised>toggle drawer</paper-button>
+        <div style="display: flex">
+          <paper-button paper-drawer-toggle raised>☰</paper-button>
+          <img src="../seismiclink.png" width="209" height="30"
+               style="background-color: #EBEBF0;">
         </div>
-        <div style="display: flex; flex-direction: column">
-          <img src="../seismiclink.png" width="220" style="background-color: #EBEBF0;">
-          <seismic-event-input></seismic-event-input>
-          <seismic-time-plot></seismic-time-plot>
-          <seismic-frequency-plot></seismic-frequency-plot>
-          <seismic-sensor-status></seismic-sensor-status>
-        </div>
+
+        <seismic-event-input></seismic-event-input>
+        <seismic-time-plot></seismic-time-plot>
+        <seismic-frequency-plot></seismic-frequency-plot>
+        <seismic-sensor-status></seismic-sensor-status>
       </div>
     </paper-drawer-panel>
   </template>

@@ -3,13 +3,17 @@
 <dom-module id="seismic-time-plot">
   <template>
     <style>
+     :host { position: relative; }
      div {
        display: inline-block;
        padding: 5px;
        border: 1px solid black;
        background: gray;
-       width: 500px;
-       height: 150px;
+       position: absolute;
+       left: 0;
+       right: 0;
+       top: 0;
+       bottom: 0;
      }
     </style>
     <div>graph here</div>
