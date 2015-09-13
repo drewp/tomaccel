@@ -4,8 +4,8 @@
 <link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
 <link rel="import" href="style.html">
 <link rel="import" href="seismic-sensor-status.html">
-<link rel="import" href="seismic-time-plot.html">
-<link rel="import" href="seismic-frequency-plot.html">
+<link rel="import" href="seismic-wide-view.html">
+<link rel="import" href="seismic-focused-view.html">
 <link rel="import" href="seismic-event-input.html">
 
 <dom-module id="seismic-app">
@@ -17,11 +17,11 @@
        align-items: stretch;
        justify-content: space-between;
      }
-     seismic-time-plot {
+     xseismic-wide-view {
        flex: 3 0;
      }
-     seismic-frequency-plot {
-       flex: 1 0;
+     xseismic-focused-view {
+       flex: 2 0;
      }
     </style>
     <paper-drawer-panel id="paperDrawerPanel" force-narrow>
@@ -33,10 +33,10 @@
                style="background-color: #EBEBF0;">
         </div>
 
-        <seismic-event-input></seismic-event-input>
-        <seismic-time-plot></seismic-time-plot>
-        <seismic-frequency-plot></seismic-frequency-plot>
+        <seismic-wide-view cursor-time="{{ct}}"></seismic-wide-view>
+        <seismic-focused-view time="{{ct}}"></seismic-focused-view>
         <seismic-sensor-status></seismic-sensor-status>
+        <seismic-event-input></seismic-event-input>
       </div>
     </paper-drawer-panel>
   </template>

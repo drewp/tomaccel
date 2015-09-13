@@ -1,0 +1,51 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="seismic-time-plot.html">
+
+<dom-module id="seismic-wide-view">
+  <template>
+    <style>
+     #cursor {
+       position: relative;
+     }
+     #vline {
+       border-left: 2px solid green;
+       height: 100px;
+       margin-left: 12px;
+     }
+     #ball {
+       background-color: green;
+       display: inline-block;
+       border-radius: 50%;
+       padding: 4px;
+       color: white;
+     }
+    </style>
+    <seismic-time-plot></seismic-time-plot>
+    <div id="cursor">
+      <div id="vline"></div>
+      <div id="ball">◂ ▸</div>
+    </div>
+  </template>
+  <script>
+   Polymer({
+     is: "seismic-wide-view",
+     properties: {
+       cursorTime: { type: Number, notify: true, reflectToAttribute: true }
+     },
+     listeners: {
+       'track': 'handleTrack'
+     },
+     handleTrack: function(e) {
+       if (e.detail.state === 'track') {
+         this.$.cursor.style.left = e.detail.x + 'px';
+         this.cursorTime = 1442126063017 + e.detail.x * 5555;
+       }
+     },
+     ready: function() {
+       
+     }
+   });
+  </script>
+</dom-module>
+
+

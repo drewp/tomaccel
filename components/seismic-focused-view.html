@@ -1,0 +1,59 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="seismic-time-plot.html">
+
+<dom-module id="seismic-focused-view">
+  <template>
+    <style>
+     th,td {
+outline: 1px dotted black;
+       }
+     td {
+       overflow: hidden;
+       width: 100px;
+       height: 100px;
+       }
+    </style>
+    <div style="margin: 5px; outline: 2px solid orange">
+    <h2>Detailed View</h2>
+    <h3>{{timeRange}}</h3>
+
+    <table>
+      <tr>
+        <th></th>
+        <th>Left Side</th>
+        <th>Right Side</th>
+      </tr>
+      <tr>
+        <th>Amplitude</th>
+        <td><seismic-time-plot></seismic-time-plot></td>
+        <td><seismic-time-plot></seismic-time-plot></td>
+      </tr>
+      <tr>
+        <th>Frequency</th>
+        <td>(freq plot)</td>
+        <td>(freq plot)</td>
+      </tr>
+    </table>
+    </div>
+  </template>
+  <script src="../bower_components/moment/moment.js"></script>
+  <script>
+   Polymer({
+     is: "seismic-focused-view",
+     properties: {
+       time: { type: Number, notify: true },
+       timeRange: { computed: '_timeRange(time)' }
+     },
+     _timeRange: function(time) {
+       var t1 = moment(time);
+       var t2 = t1.clone().add(5, 'minutes');
+       return t1.format('H:mm:ss') + ' - ' + t2.format('H:mm:ss');
+     },
+     ready: function() {
+       
+     }
+   });
+  </script>
+</dom-module>
+
+
