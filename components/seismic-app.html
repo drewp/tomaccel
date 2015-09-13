@@ -8,6 +8,7 @@
 <link rel="import" href="seismic-wide-view.html">
 <link rel="import" href="seismic-focused-view.html">
 <link rel="import" href="seismic-event-input.html">
+<link rel="import" href="seismic-sensor-data-store.html">
 
 <dom-module id="seismic-app">
   <template>
@@ -32,9 +33,10 @@
         <paper-drawer-panel id="paperDrawerPanel" force-narrow>
           <div drawer>some drawer things. settings, about</div>
           <div main>
-            <seismic-wide-view cursor-time="{{ct}}"></seismic-wide-view>
-            <seismic-focused-view time="{{ct}}"></seismic-focused-view>
-            <seismic-event-input></seismic-event-input>            
+            <seismic-wide-view data="{{d}}" cursor-time="{{ct}}"></seismic-wide-view>
+            <seismic-focused-view data="{{d}}" time="{{ct}}"></seismic-focused-view>
+            <seismic-event-input></seismic-event-input>
+            <seismic-sensor-data-store values="{{d}}"></seismic-sensor-data-store>
           </div>
         </paper-drawer-panel>
       </div>

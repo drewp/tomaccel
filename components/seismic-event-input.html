@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<!-- this one makes a Script error. [unknown: 0] that was distracting me -->
+link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <dom-module id="seismic-event-input">
   <template>
@@ -27,9 +28,9 @@
     </div>
   </template>
   <script>
-
-     Polymer({
-       is: "seismic-event-input",
+/*
+   Polymer({
+     is: "seismic-event-input",
      properties: {
        fresh: String
      },
@@ -41,8 +42,8 @@
          setTimeout(loop, 1000);
        }.bind(this);
        loop();
-       }
-     });
-
+     }
+   });
+*/
   </script>
 </dom-module>

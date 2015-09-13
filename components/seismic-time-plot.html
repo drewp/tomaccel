@@ -16,10 +16,14 @@
        top: 0;
        bottom: 0;
      }
+
+     text {
+       fill: red;
+       }
     </style>
       <link type="text/css" rel="stylesheet" href="../lib/rickshaw/rickshaw.css">
 
-    <div id="chart"></div>
+      <div id="chart"></div>
   </template>
   <script src="../lib/rickshaw/vendor/d3.v3.js"></script>
   <script src="../lib/rickshaw/rickshaw.min.js"></script>
@@ -30,6 +34,7 @@
        Polymer.IronResizableBehavior
      ],
      properties: {
+       data: { type: Array, notify: true }
      },
      listeners: {
        'iron-resize': '_onIronResize'
@@ -45,40 +50,78 @@
      },
      ready: function() {
        var tv = 250;
-      // instantiate our graph!
-        this.graph = new Rickshaw.Graph( {
-        element: this.$.chart,
-        renderer: 'line',
-        series: new Rickshaw.Series.FixedDuration([{ name: 'one', color: "#5376DB" }, {name: 'two', color: "#D63EA2"}], undefined, {
-          timeInterval: tv,
-          maxDataPoints: 100,
-          timeBase: new Date().getTime() / 1000
-        })
-      });
-/*
+       var seriesData = [[], []];
+       // instantiate our graph!
+       this.graph = new Rickshaw.Graph({
+         element: this.$.chart,
+         renderer: 'line',
+         min: 0,
+         max: 6000,
+         series: [
+           {name: 'left', color: "#5376DB", data: seriesData[0]},
+           {name: 'right', color: "#D63EA2", data: seriesData[1]}
+         ]});
+       //undefined, {timeInterval: tv, maxDataPoints: 100, timeBase: new Date().getTime() / 1000});
+      
+       /*
        var xAxis = new Rickshaw.Graph.Axis.X( {
-         graph: this.graph,
-         tickFormat: new Date().getTime(),
-         
+       graph: this.graph,
+       tickFormat: new Date().getTime(),
        });
-*/
+        */
 
        new Rickshaw.Graph.Axis.Time({
          graph: this.graph
        });
-      this.graph.render();
-    
-      // add some data every so often
-      var i = 0;
-      var iv = setInterval( function() {
-        var data = { one: Math.floor(Math.random() * 40) + 120 };
-        var randInt = Math.floor(Math.random()*100);
-        data.two = (Math.sin(i++ / 40) + 4) * (randInt + 400);
-        this.graph.series.addData(data);
-        this.graph.render();
-      }.bind(this), tv );
-          }
-  })
+       this.graph.render();
+       
+       // add some data every so often
+       var i = 0;
+       var iv = setInterval( function() {
+         if (!this.data) {
+           //console.log('no data');
+           return;
+         }
+         console.log('dlen ' + this.data.length);
+
+         seriesData[0].splice(0, seriesData[0].length);
+         var prevY = 0;
+         var prevDy = 0;
+         var lastHi = 0;
+         var lastLo = 0;
+         var amps = [0];
+         this.data.forEach(function(pair) {
+           var t = pair[0], y = pair[1];
+           
+           var dy = y - prevY;
+           if (dy > 0 && prevDy < 0) { lastLo = y; amps.push(Math.abs(lastHi - lastLo)); }
+           if (dy < 0 && prevDy > 0) { lastHi = y; amps.push(Math.abs(lastHi - lastLo)); }
+
+           amps.splice(0, amps.length - 5);
+           var maxAmp = 0;
+           amps.forEach(function(a) { maxAmp = Math.max(maxAmp, a); });
+
+           if (Date.now() - t < 30000) {
+             seriesData[0].push({x: t, y: maxAmp});
+           }
+
+           prevY = y;
+           prevDy = dy;
+         });
+                           
+         // series 1 is random and small
+         this.graph.update();
+         return;
+
+         
+         var data = { one: Math.floor(Math.random() * 40) + 120 };
+         var randInt = Math.floor(Math.random()*100);
+         data.two = (Math.sin(i++ / 40) + 4) * (randInt + 400);
+         this.graph.series.addData(data);
+         this.graph.render();
+       }.bind(this), tv );
+     }
+   });
 
   </script>
 </dom-module>

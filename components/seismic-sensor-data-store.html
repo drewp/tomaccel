@@ -1,0 +1,164 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="cordova.js"></script>
+
+<dom-module id="seismic-sensor-data-store">
+  <template>
+    data store has <span>{{values.length}}</span> points
+  </template>
+  <script>
+   if (window.hyper && window.hyper.log) { console.log = hyper.log }
+  </script>
+  <script src="../libs/jquery/jquery.js"></script>
+  <script src="../lib/evothings/evothings.js"></script>
+  <script src="../lib/evothings/util/util.js"></script>
+  <script src="../lib/evothings/easyble/easyble.js"></script>
+  <script>
+
+   // UUIDs for movement services and characteristics.
+   var MOVEMENT_SERVICE = 'f000aa80-0451-4000-b000-000000000000';
+   var MOVEMENT_DATA = 'f000aa81-0451-4000-b000-000000000000';
+   var MOVEMENT_CONFIG = 'f000aa82-0451-4000-b000-000000000000';
+   var MOVEMENT_PERIOD = 'f000aa83-0451-4000-b000-000000000000';
+   var MOVEMENT_NOTIFICATION = '00002902-0000-1000-8000-00805f9b34fb';
+   
+   function startSyntheticReader(add) {
+     setInterval(function() {
+       add(Date.now(), .7 + .3 * Math.random());
+     }, 20);
+   }
+
+   function startAccelerometerNotification(device, onData) {
+     console.log('Status: Starting accelerometer notification...');
+
+     // Set accelerometer configuration to ON.
+     // magnetometer on: 64 (1000000) (seems to not work in ST2 FW 0.89)
+     // 3-axis acc. on: 56 (0111000)
+     // 3-axis gyro on: 7 (0000111)
+     // 3-axis acc. + 3-axis gyro on: 63 (0111111)
+     // 3-axis acc. + 3-axis gyro + magnetometer on: 127 (1111111)
+     device.writeCharacteristic(
+       MOVEMENT_CONFIG,
+       new Uint8Array([56,0]),
+       function() {
+         console.log('Status: writeCharacteristic ok.');
+       },
+       function(errorCode) {
+         console.log('Error: writeCharacteristic: ' + errorCode + '.');
+       });
+
+     // Set accelerometer period to 100 ms.
+     device.writeCharacteristic(
+       MOVEMENT_PERIOD,
+       new Uint8Array([10]),
+       function() {
+         console.log('Status: writeCharacteristic ok.');
+       },
+       function(errorCode) {
+         console.log('Error: writeCharacteristic: ' + errorCode + '.');
+       });
+     
+     // Set accelerometer notification to ON.
+     device.writeDescriptor(
+       MOVEMENT_DATA,
+       MOVEMENT_NOTIFICATION, // Notification descriptor.
+       new Uint8Array([1,0]),
+       function() {
+         console.log('Status: writeDescriptor ok.');
+       },
+       function(errorCode) {
+         // This error will happen on iOS, since this descriptor is not
+         // listed when requesting descriptors. On iOS you are not allowed
+         // to use the configuration descriptor explicitly. It should be
+         // safe to ignore this error.
+         console.log('Error: writeDescriptor: ' + errorCode + '.');
+       });
+
+     // Start accelerometer notification.
+     device.enableNotification(
+       MOVEMENT_DATA,
+       onData,
+       function(errorCode) {
+         console.log('Error: enableNotification: ' + errorCode + '.');
+       });
+   }
+   
+   function deviceIsSensorTag(device) {
+        return (device != null) &&
+                (device.name != null) &&
+                (device.name.indexOf('Sensor Tag') > -1 ||
+                        device.name.indexOf('SensorTag') > -1);
+   };
+
+   function startBluetoothReader(add) {
+
+     var onData = function(data) {
+       var dataArray = new Uint8Array(data);
+       var rawX = evothings.util.littleEndianToInt16(dataArray, 6);
+       var rawY = evothings.util.littleEndianToInt16(dataArray, 8);
+       var rawZ = evothings.util.littleEndianToInt16(dataArray, 10);
+       var mag = Math.pow(rawX * rawX + rawY * rawY + rawZ * rawZ, .5);
+       add(Date.now(), mag);
+     };
+     
+     document.addEventListener('deviceready', function() {
+       evothings.scriptsLoaded(function() {
+         console.log('startScan');
+         // start timeout here
+         evothings.easyble.startScan(
+	   function(device) {
+	     if (!deviceIsSensorTag(device)) {
+               return;
+             }
+             
+             console.log('stopScan. Found: ' + device.name);
+	     evothings.easyble.stopScan();
+
+             device.connect(
+               function(device) {
+                 console.log('device connected; read services');
+                 device.readServices([MOVEMENT_SERVICE],
+                                     function(device) {
+                   startAccelerometerNotification(device, onData);
+                   },
+                                     function(errorCode) {
+                   console.log('Error: Failed to read services: ' + errorCode + '.');
+                 });
+               },
+               function(errorCode) {
+                 console.log('Error: Connection failed: ' + errorCode + '.');
+                 evothings.ble.reset();
+                 // This can cause an infinite loop...
+                 //app.connectToDevice(device);
+               });
+             //clearTimeout(app.connectTimer);
+
+	   },
+	   function(errorCode) {
+	     console.log('Error: startScan: ' + errorCode + '.');
+	   });
+       });
+     }, false);
+   }
+
+   Polymer({
+     is: "seismic-sensor-data-store",
+     properties: {
+       values: { type: Object, notify: true, reflectToAttribute: true }
+     },
+     ready: function() {
+       this.values = [];
+       var add = function(t, v) {
+         this.push('values', [t, v]);
+         if (this.values.length > 500) {
+           this.values.splice(0, 100);
+         }
+       }.bind(this);
+       if (window.cordova && window.cordova.platformId == 'android') {
+         startBluetoothReader(add);
+       } else {
+         startSyntheticReader(add);
+       }
+     }
+   });
+  </script>
+</dom-module>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title>data store demo</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="components/seismic-sensor-data-store.html">
+    <link rel="icon" type="image/png" href="icon.png">
+  </head>
+  <body>
+    <seismic-sensor-data-store></seismic-sensor-data-store>
+    <script>
+     setTimeout(function() {
+       var ds = document.querySelector('seismic-sensor-data-store');
+       window.ds = ds;
+
+       }, 1000);
+    </script>
+  </body>
+</html>

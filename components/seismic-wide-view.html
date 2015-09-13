@@ -52,7 +52,7 @@
     </style>
     <div id="frame">
       <div id="focused"></div>
-      <seismic-time-plot id="plot"></seismic-time-plot>
+      <seismic-time-plot id="plot" data="{{data}}"></seismic-time-plot>
       <div id="cursor">
         <div id="vline"></div>
         <div id="ball"></div>
@@ -67,7 +67,8 @@
    Polymer({
      is: "seismic-wide-view",
      properties: {
-       cursorTime: { type: Number, notify: true, reflectToAttribute: true }
+       cursorTime: { type: Number, notify: true, reflectToAttribute: true },
+       data: { type: Object, notify: true }
      },
      listeners: {
        'track': 'handleTrack'
