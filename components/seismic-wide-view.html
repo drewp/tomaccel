@@ -4,6 +4,12 @@
 <dom-module id="seismic-wide-view">
   <template>
     <style>
+     h2 {
+       color: #fff;
+     }
+     h3 {
+       color: #9C9EA2
+     }
      #cursor {
        position: relative;
        user-select: none;
@@ -14,19 +20,14 @@
        height: 100px;
      }
      #ball {
-       background-color: #50E3C2;
-       display: inline-block;
-       border-radius: 50%;
-       width: 34px;
-       height: 34px;
-       color: white;
-       font-size: 18px;
-       display: flex;
-       align-items: baseline;
-       box-shadow: 0 7px 9px rgba(0, 0, 0, 0.29);
-       justify-content: center;
+       width: 90px;
+       height: 80px;
+       background-image: url('https://plus/tomaccel/asset_pack/slider@3x.png');
+       background-size: 80px;
+       background-repeat: no-repeat;
        position: relative;
-       left: -16px;
+       left: -39px;
+       top: -16px;
      }
      #focused {
        background: #3B4147;
@@ -36,7 +37,11 @@
     <seismic-time-plot id="plot"></seismic-time-plot>
     <div id="cursor">
       <div id="vline"></div>
-      <div id="ball">◂ ▸</div>
+      <div id="ball"></div>
+    </div>
+    <div style="position: absolute; left: 10px; top: 10px"> 
+      <h2>Activity</h2>
+      <h3>Last 5 hours v</h3>
     </div>
   </template>
   <script>
