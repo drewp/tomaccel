@@ -1,7 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="style.html">
 <link rel="import" href="seismic-sensor-status.html">
 <link rel="import" href="seismic-wide-view.html">
@@ -12,33 +13,30 @@
   <template>
     <style>
      div[main] {
+       overflow: auto;
        display: flex;
        flex-direction: column;
        align-items: stretch;
-       justify-content: space-between;
-     }
-     xseismic-wide-view {
-       flex: 3 0;
-     }
-     xseismic-focused-view {
-       flex: 2 0;
      }
     </style>
-    <paper-drawer-panel id="paperDrawerPanel" force-narrow>
-      <div drawer>some drawer things. settings, about</div>
-      <div main>
-        <div style="display: flex">
-          <paper-button paper-drawer-toggle raised>☰</paper-button>
-          <img src="../seismiclink.png" width="209" height="30"
-               style="background-color: #EBEBF0;">
-        </div>
-
-        <seismic-wide-view cursor-time="{{ct}}"></seismic-wide-view>
-        <seismic-focused-view time="{{ct}}"></seismic-focused-view>
-        <seismic-sensor-status></seismic-sensor-status>
-        <seismic-event-input></seismic-event-input>
+    <paper-header-panel class="fit">
+      <paper-toolbar>
+        <paper-icon-button icon="menu" on-tap="menuAction">
+        </paper-icon-button>
+        <div class="title">SeismicLink</div>
+      </paper-toolbar>
+      <div class="content fit">
+        <paper-drawer-panel id="paperDrawerPanel" force-narrow>
+          <div drawer>some drawer things. settings, about</div>
+          <div main>
+            <seismic-wide-view cursor-time="{{ct}}"></seismic-wide-view>
+            <seismic-focused-view time="{{ct}}"></seismic-focused-view>
+            <seismic-sensor-status></seismic-sensor-status>
+            <seismic-event-input></seismic-event-input>
+          </div>
+        </paper-drawer-panel>
       </div>
-    </paper-drawer-panel>
+    </paper-header-panel>
   </template>
   <script>
    Polymer({
@@ -47,6 +45,9 @@
      },
      ready: function() {
        
+     },
+     menuAction: function() {
+       this.querySelector('paper-drawer-panel').togglePanel();
      }
    });
   </script>
