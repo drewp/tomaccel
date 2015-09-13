@@ -23,7 +23,7 @@
    
    function startSyntheticReader(add) {
      setInterval(function() {
-       add(Date.now(), .7 + .3 * Math.random());
+       add(Date.now(), 3000 * (.7 + .3 * Math.random()));
      }, 20);
    }
 
