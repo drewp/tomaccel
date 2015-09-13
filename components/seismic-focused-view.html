@@ -22,12 +22,22 @@
        overflow: hidden;
      }
      td, td > div {
-       width: 100px;
+       width: 120px;
        height: 100px;
        position: relative;
        }
      seismic-time-plot {
        position: absolute; left: 0; top: 0; right:0; bottom: 0;
+     }
+     #freq1 {
+       background-image: url(../mockup-with-freqs.png);
+       background-position: -71px -1663px;
+       background-size: 280%;
+     }
+     #freq2 {
+       background-image: url(../mockup-with-freqs.png);
+       background-position:  -191px -1663px;
+       background-size: 280%;
      }
     </style>
 
@@ -47,8 +57,8 @@
       </tr>
       <tr>
         <th>Frequency</th>
-        <td>(freq plot)</td>
-        <td>(freq plot)</td>
+        <td><div id="freq1"></div></td>
+        <td><div id="freq2"></div></td>
       </tr>
     </table>
   </template>
