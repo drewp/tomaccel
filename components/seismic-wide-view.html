@@ -20,7 +20,7 @@
        color: white;
      }
     </style>
-    <seismic-time-plot></seismic-time-plot>
+    <seismic-time-plot id="plot"></seismic-time-plot>
     <div id="cursor">
       <div id="vline"></div>
       <div id="ball">◂ ▸</div>
@@ -38,8 +38,11 @@
      handleTrack: function(e) {
        if (e.detail.state === 'track') {
          this.$.cursor.style.left = e.detail.x + 'px';
-         this.cursorTime = 1442126063017 + e.detail.x * 5555;
+         this.cursorTime = this.graphTimeAt(e.detail.x);
        }
+     },
+     graphTimeAt: function(x) {
+       return this.$.plot.graph.x.invert(x);
      },
      ready: function() {
        
