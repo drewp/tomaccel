@@ -17,13 +17,16 @@
        display: flex;
        flex-direction: column;
        align-items: stretch;
+       background: #2C363E;
      }
     </style>
+
     <paper-header-panel class="fit">
       <paper-toolbar>
         <paper-icon-button icon="menu" on-tap="menuAction">
         </paper-icon-button>
         <div class="title">SeismicLink</div>
+        <seismic-sensor-status></seismic-sensor-status>
       </paper-toolbar>
       <div class="content fit">
         <paper-drawer-panel id="paperDrawerPanel" force-narrow>
@@ -31,8 +34,7 @@
           <div main>
             <seismic-wide-view cursor-time="{{ct}}"></seismic-wide-view>
             <seismic-focused-view time="{{ct}}"></seismic-focused-view>
-            <seismic-sensor-status></seismic-sensor-status>
-            <seismic-event-input></seismic-event-input>
+            <seismic-event-input></seismic-event-input>            
           </div>
         </paper-drawer-panel>
       </div>

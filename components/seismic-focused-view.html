@@ -4,16 +4,27 @@
 <dom-module id="seismic-focused-view">
   <template>
     <style>
+     :host {
+       background: #3B4147
+     }
+     
+ h2 {
+   color: #fff;
+ }
+ h3 {
+   color: #9C9EA2
+ }
      th,td {
-outline: 1px dotted black;
-       }
+       outline: 1px dotted black;
+       color: #8D8F94;
+     }
      td {
        overflow: hidden;
        width: 100px;
        height: 100px;
-       }
+     }
     </style>
-    <div style="margin: 5px; outline: 2px solid orange">
+
     <h2>Detailed View</h2>
     <h3>{{timeRange}}</h3>
 
@@ -34,7 +45,6 @@ outline: 1px dotted black;
         <td>(freq plot)</td>
       </tr>
     </table>
-    </div>
   </template>
   <script src="../bower_components/moment/moment.js"></script>
   <script>
