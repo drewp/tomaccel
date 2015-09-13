@@ -20,8 +20,14 @@
      }
      td {
        overflow: hidden;
+     }
+     td, td > div {
        width: 100px;
        height: 100px;
+       position: relative;
+       }
+     seismic-time-plot {
+       position: absolute; left: 0; top: 0; right:0; bottom: 0;
      }
     </style>
 
@@ -36,8 +42,8 @@
       </tr>
       <tr>
         <th>Amplitude</th>
-        <td><seismic-time-plot></seismic-time-plot></td>
-        <td><seismic-time-plot></seismic-time-plot></td>
+        <td><div><seismic-time-plot></seismic-time-plot></div></td>
+        <td><div><seismic-time-plot></seismic-time-plot></div></td>
       </tr>
       <tr>
         <th>Frequency</th>

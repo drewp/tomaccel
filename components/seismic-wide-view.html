@@ -4,24 +4,34 @@
 <dom-module id="seismic-wide-view">
   <template>
     <style>
+     :host {
+       min-height: 180px;
+       position: relative;
+     }
      h2 {
        color: #fff;
      }
      h3 {
        color: #9C9EA2
      }
-     #cursor {
+     #frame {
+       outline: 2px solid orange;
        position: relative;
+       -webkit-user-select: none;
+       position: absolute; left: 0; top: 0; right:0; bottom: 0;
+     }
+     #cursor {
+       position: absolute;
        user-select: none;
        -webkit-user-select: none;
      }
      #vline {
        border-left: 2px solid #50E3C2;
-       height: 100px;
+       height: 190px;
      }
      #ball {
        width: 90px;
-       height: 80px;
+       height: 100px;
        background-image: url('../asset_pack/slider@3x.png');
        background-size: 80px;
        background-repeat: no-repeat;
@@ -32,16 +42,25 @@
      #focused {
        background: #3B4147;
      }
+     #plot {
+       position: absolute;
+       left: 0;
+       top: 0;
+       right: 0;
+       bottom: 0;
+     }
     </style>
-    <div id="focused"></div>
-    <seismic-time-plot id="plot"></seismic-time-plot>
-    <div id="cursor">
-      <div id="vline"></div>
-      <div id="ball"></div>
-    </div>
-    <div style="position: absolute; left: 10px; top: 10px"> 
-      <h2>Activity</h2>
-      <h3>Last 5 hours v</h3>
+    <div id="frame">
+      <div id="focused"></div>
+      <seismic-time-plot id="plot"></seismic-time-plot>
+      <div id="cursor">
+        <div id="vline"></div>
+        <div id="ball"></div>
+      </div>
+      <div style="position: absolute; left: 10px; top: 10px"> 
+        <h2>Activity</h2>
+        <h3>Last 5 hours ⌵</h3>
+      </div>
     </div>
   </template>
   <script>
@@ -64,10 +83,11 @@
      },
      xAtGraphTime: function(t) {
        return this.$.plot.graph.x(t);
-       },
+     },
      ready: function() {
        this.handleTrack({detail: {state: 'track',
                                   x: this.xAtGraphTime(40000000)}});
+       // also update cursor x when widget size changes
      }
    });
   </script>

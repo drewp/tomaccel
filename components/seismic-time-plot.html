@@ -26,7 +26,7 @@
    Polymer({
      is: "seismic-time-plot",
      behaviors: [
-       //Polymer.IronResizableBehavior
+       Polymer.IronResizableBehavior
      ],
      properties: {
      },
@@ -34,12 +34,15 @@
        'iron-resize': '_onIronResize'
      },
      _onIronResize: function() {
+       if (this.$.chart.offsetHeight < 50) {
+         console.log('_onIronResize', this.$.chart.offsetHeight);
+         return;
+       }
        this.graph.configure({width: this.$.chart.offsetWidth,
                              height: this.$.chart.offsetHeight});
        this.graph.render();
      },
      ready: function() {
-
        var tv = 250;
       // instantiate our graph!
         this.graph = new Rickshaw.Graph( {
@@ -49,12 +52,11 @@
           timeInterval: tv,
           maxDataPoints: 100,
           timeBase: new Date().getTime() / 1000
-        }) 
+        })
+      });
 
-      } );
-      
       var xAxis = new Rickshaw.Graph.Axis.X( {graph: this.graph, tickFormat: new Date().getTime()});
-      
+
       this.graph.render();
     
       // add some data every so often
