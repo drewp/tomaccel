@@ -6,6 +6,7 @@
     <style>
      :host { position: relative; }
      div {
+       background: #2C363E;
        display: inline-block;
        padding: 5px;
        outline: 1px solid black;
@@ -18,7 +19,7 @@
     </style>
     <div id="chart"></div>
   </template>
-  <link type="text/css" rel="stylesheet" href="../rickshaw.css">
+  <link type="text/css" rel="stylesheet" href="../lib/rickshaw/rickshaw.css">
   <script src="../lib/rickshaw/vendor/d3.v3.js"></script>
   <script src="../lib/rickshaw/rickshaw.min.js"></script>
   <script>
@@ -38,32 +39,35 @@
        this.graph.render();
      },
      ready: function() {
-       this.graph = new Rickshaw.Graph( {
-	 element: this.$.chart,
-	 renderer: 'lineplot',
-	 padding: { top: 0.1 },
-	 series: [
-	   {
-	     data: [ { x: 00000000, y: 40 },
-                     { x: 10000000, y: 49 },
-                     { x: 20000000, y: 38 },
-                     { x: 30000000, y: 30 },
-                     { x: 40000000, y: 32 } ],
-	     color: 'steelblue',
-	     name: "blue",
-	   }, { 
-	     data: [ { x: 00000000, y: 19 },
-                     { x: 10000000, y: 22 },
-                     { x: 20000000, y: 32 },
-                     { x: 30000000, y: 20 },
-                     { x: 40000000, y: 21 } ],
-	     color: 'lightblue',
-	     name: "light blue" 
-	   }
-	 ]
-       } );
-       this.graph.render();
-     }
-   });
+
+       var tv = 250;
+      // instantiate our graph!
+        this.graph = new Rickshaw.Graph( {
+        element: this.$.chart,
+        renderer: 'line',
+        series: new Rickshaw.Series.FixedDuration([{ name: 'one', color: "#5376DB" }, {name: 'two', color: "#D63EA2"}], undefined, {
+          timeInterval: tv,
+          maxDataPoints: 100,
+          timeBase: new Date().getTime() / 1000
+        }) 
+
+      } );
+      
+      var xAxis = new Rickshaw.Graph.Axis.X( {graph: this.graph, tickFormat: new Date().getTime()});
+      
+      this.graph.render();
+    
+      // add some data every so often
+      var i = 0;
+      var iv = setInterval( function() {
+        var data = { one: Math.floor(Math.random() * 40) + 120 };
+        var randInt = Math.floor(Math.random()*100);
+        data.two = (Math.sin(i++ / 40) + 4) * (randInt + 400);
+        this.graph.series.addData(data);
+        this.graph.render();
+      }.bind(this), tv );
+          }
+  })
+
   </script>
 </dom-module>
