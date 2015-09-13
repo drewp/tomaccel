@@ -6,6 +6,8 @@
     <style>
      #cursor {
        position: relative;
+       user-select: none;
+       -webkit-user-select: none;
      }
      #vline {
        border-left: 2px solid green;
@@ -37,15 +39,20 @@
      },
      handleTrack: function(e) {
        if (e.detail.state === 'track') {
-         this.$.cursor.style.left = e.detail.x + 'px';
+         var cursorWidth = 20;
+         this.$.cursor.style.left = (e.detail.x - cursorWidth / 2) + 'px';
          this.cursorTime = this.graphTimeAt(e.detail.x);
        }
      },
      graphTimeAt: function(x) {
        return this.$.plot.graph.x.invert(x);
      },
+     xAtGraphTime: function(t) {
+       return this.$.plot.graph.x(t);
+       },
      ready: function() {
-       
+       this.handleTrack({detail: {state: 'track',
+                                  x: this.xAtGraphTime(40000000)}});
      }
    });
   </script>
