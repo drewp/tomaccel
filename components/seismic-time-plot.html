@@ -34,7 +34,8 @@
        Polymer.IronResizableBehavior
      ],
      properties: {
-       data: { type: Array, notify: true }
+       data: { type: Array, notify: true },
+       timeRange: { type: Object, reflectToAttribute: true, notify: true } // {t1: ms, t2: ms} or {age: ms}
      },
      listeners: {
        'iron-resize': '_onIronResize'
@@ -82,7 +83,6 @@
            //console.log('no data');
            return;
          }
-         console.log('dlen ' + this.data.length);
 
          seriesData[0].splice(0, seriesData[0].length);
          var prevY = 0;
@@ -90,6 +90,18 @@
          var lastHi = 0;
          var lastLo = 0;
          var amps = [0];
+         var timeRange = this.timeRange;
+         if (typeof timeRange === 'string') {
+           // why didn't the attribute parsing work?
+           timeRange = JSON.parse(timeRange);
+         }
+         
+         var t1 = timeRange.t1, t2 = timeRange.t2;
+         if (!t1) {
+           t2 = Date.now();
+           t1 = t2 - timeRange.ago;
+         }
+         
          this.data.forEach(function(pair) {
            var t = pair[0], y = pair[1];
            
@@ -101,7 +113,7 @@
            var maxAmp = 0;
            amps.forEach(function(a) { maxAmp = Math.max(maxAmp, a); });
 
-           if (Date.now() - t < 30000) {
+           if (t > t1 && t < t2) {
              seriesData[0].push({x: t, y: maxAmp});
            }
 

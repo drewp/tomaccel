@@ -22,8 +22,13 @@
    var MOVEMENT_NOTIFICATION = '00002902-0000-1000-8000-00805f9b34fb';
    
    function startSyntheticReader(add) {
+
+     function randomValue() {
+       return 3000 * (.7 + .3 * Math.random());
+     }
+     
      setInterval(function() {
-       add(Date.now(), 3000 * (.7 + .3 * Math.random()));
+       add(Date.now(), randomValue());
      }, 20);
    }
 

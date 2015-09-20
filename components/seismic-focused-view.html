@@ -42,7 +42,7 @@
     </style>
 
     <h2>Detailed View</h2>
-    <h3>{{timeRange}}</h3>
+    <h3>{{timeRangeLabel}}</h3>
 
     <table>
       <tr>
@@ -52,8 +52,8 @@
       </tr>
       <tr>
         <th>Amplitude</th>
-        <td><div><seismic-time-plot></seismic-time-plot></div></td>
-        <td><div><seismic-time-plot></seismic-time-plot></div></td>
+        <td><div><seismic-time-plot data="{{data}}" time-range='{{timeRange}}'></seismic-time-plot></div></td>
+        <td><div><seismic-time-plot data="{{data}}" time-range='{{timeRange}}'></seismic-time-plot></div></td>
       </tr>
       <tr>
         <th>Frequency</th>
@@ -68,11 +68,16 @@
      is: "seismic-focused-view",
      properties: {
        time: { type: Number, notify: true },
-       timeRange: { computed: '_timeRange(time)' }
+       timeRange: { computed: '_timeRange(time)' },
+       timeRangeLabel: { computed: '_timeRangeLabel(timeRange)' },
+       data: { type: Object, notify: true },
      },
      _timeRange: function(time) {
-       var t1 = moment(time);
-       var t2 = t1.clone().add(5, 'minutes');
+       return {t1: time - 5000, t2: time + 5000};
+     },
+     _timeRangeLabel: function(timeRange) {
+       var t1 = moment(timeRange.t1);
+       var t2 = moment(timeRange.t2);
        return t1.format('H:mm:ss') + ' - ' + t2.format('H:mm:ss');
      },
      ready: function() {
