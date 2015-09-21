@@ -23,12 +23,20 @@
    
    function startSyntheticReader(add) {
 
-     function randomValue() {
-       return 3000 * (.7 + .3 * Math.random());
+     function randomValue(t) {
+       var tremor = Math.sin(6.28 * t / 166);
+       var noise = .3 * Math.random();
+       return 3000 * (.7 + noise + .5 * Math.sin(t / 45000) * tremor);
      }
-     
+     var now = Date.now();
+     console.log("make historical data");
+     for (var t = now - 600000; t < now; t += 60) {
+       add(t, randomValue(t));
+     }
+     console.log('done');
      setInterval(function() {
-       add(Date.now(), randomValue());
+       var t = Date.now()
+       add(t, randomValue(t));
      }, 20);
    }
 
@@ -154,7 +162,7 @@
        this.values = [];
        var add = function(t, v) {
          this.push('values', [t, v]);
-         if (this.values.length > 500) {
+         if (this.values.length > 30000) {
            this.values.splice(0, 100);
          }
        }.bind(this);

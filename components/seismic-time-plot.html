@@ -50,17 +50,15 @@
        this.graph.render();
      },
      ready: function() {
-       var tv = 250;
-       var seriesData = [[], []];
-       // instantiate our graph!
+       this.seriesData = [[], []];
        this.graph = new Rickshaw.Graph({
          element: this.$.chart,
          renderer: 'line',
          min: 0,
          max: 6000,
          series: [
-           {name: 'left', color: "#5376DB", data: seriesData[0]},
-           {name: 'right', color: "#D63EA2", data: seriesData[1]}
+           {name: 'left', color: "#5376DB", data: this.seriesData[0]},
+           {name: 'right', color: "#D63EA2", data: this.seriesData[1]}
          ]});
        //undefined, {timeInterval: tv, maxDataPoints: 100, timeBase: new Date().getTime() / 1000});
       
@@ -75,63 +73,94 @@
          graph: this.graph
        });
        this.graph.render();
+
+       setInterval(this.updateGraph.bind(this), 250);
+     },
+     trimSeries: function(series, t1, t2) {
+       // alter series so it is either empty or covers from t1 to tNew
+       // (tNew <= t2). Return tNew.
        
-       // add some data every so often
-       var i = 0;
-       var iv = setInterval( function() {
-         if (!this.data) {
-           //console.log('no data');
-           return;
+       if (series.length < 1) {
+         return t1;
+       }
+
+       if (series[0].x > t1 + 100) {
+         series.splice(0, series.length);
+         return t1;
+       }
+       
+       for (var i=0; i < series.length; i++) {
+         if (series[i].x > t1) {
+           break;
          }
+       }
+       series.splice(0, i);
 
-         seriesData[0].splice(0, seriesData[0].length);
-         var prevY = 0;
-         var prevDy = 0;
-         var lastHi = 0;
-         var lastLo = 0;
-         var amps = [0];
-         var timeRange = this.timeRange;
-         if (typeof timeRange === 'string') {
-           // why didn't the attribute parsing work?
-           timeRange = JSON.parse(timeRange);
-         }
-         
-         var t1 = timeRange.t1, t2 = timeRange.t2;
-         if (!t1) {
-           t2 = Date.now();
-           t1 = t2 - timeRange.ago;
-         }
-         
-         this.data.forEach(function(pair) {
-           var t = pair[0], y = pair[1];
-           
-           var dy = y - prevY;
-           if (dy > 0 && prevDy < 0) { lastLo = y; amps.push(Math.abs(lastHi - lastLo)); }
-           if (dy < 0 && prevDy > 0) { lastHi = y; amps.push(Math.abs(lastHi - lastLo)); }
+       if (series.length < 1) {
+         return t1;
+       }
 
-           amps.splice(0, amps.length - 5);
-           var maxAmp = 0;
-           amps.forEach(function(a) { maxAmp = Math.max(maxAmp, a); });
+       // missing t2 crop
 
-           if (t > t1 && t < t2) {
-             seriesData[0].push({x: t, y: maxAmp});
-           }
-
-           prevY = y;
-           prevDy = dy;
-         });
-                           
-         // series 1 is random and small
-         this.graph.update();
+       return series[series.length - 1].x;
+     },
+     updateGraph: function() {
+       if (!this.data) {
          return;
+       }
 
+       var t1 = this.timeRange.t1, t2 = this.timeRange.t2;
+       if (!t1) {
+         t2 = Date.now();
+         t1 = t2 - this.timeRange.ago;
+       }
+
+       var outputTimeStart = this.trimSeries(this.seriesData[0], t1, t2);
+
+       var prevY = 0;
+       var prevDy = 0;
+       var lastHi = 0;
+       var lastLo = 0;
+       var amps = [0];
+       var prevT = 0;
+       var maxDisplayedPoints = 500;
+       var minSpacing = (t2 - t1) / maxDisplayedPoints;
+       for (var i=0; i < this.data.length; i++) {
+         pair = this.data[i];
+
+         var t = pair[0], y = pair[1];
+
+         if (t < outputTimeStart - 1000 || t > t2 + 1000) {
+           continue;
+         }
          
-         var data = { one: Math.floor(Math.random() * 40) + 120 };
-         var randInt = Math.floor(Math.random()*100);
-         data.two = (Math.sin(i++ / 40) + 4) * (randInt + 400);
-         this.graph.series.addData(data);
-         this.graph.render();
-       }.bind(this), tv );
+         var dy = y - prevY;
+         if (dy > 0 && prevDy < 0) {
+           lastLo = y;
+           amps.push(Math.abs(lastHi - lastLo));
+         }
+         if (dy < 0 && prevDy > 0) {
+           lastHi = y;
+           amps.push(Math.abs(lastHi - lastLo));
+         }
+
+         amps.splice(0, amps.length - 5);
+         var maxAmp = Math.max.apply(null, amps);
+
+         if (t - prevT < minSpacing) {
+           continue;
+         }
+
+         if (t > outputTimeStart && t < t2) {
+           this.seriesData[0].push({x: t, y: maxAmp});
+         }
+
+         prevT = t;
+         prevY = y;
+         prevDy = dy;
+       }
+       
+       this.graph.update();
      }
    });
 
